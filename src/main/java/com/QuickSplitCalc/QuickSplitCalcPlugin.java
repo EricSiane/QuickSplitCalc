@@ -21,6 +21,7 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.awt.Color;
 
 @PluginDescriptor(
         name = "QuickSplitCalc",
@@ -141,26 +142,31 @@ public class QuickSplitCalcPlugin extends Plugin {
         }
 
         String message = new ChatMessageBuilder()
-                .append(ChatColorType.HIGHLIGHT)
-                .append(formatNumber(stackSize, formatter, false) + " coins split between " + numPeople + " people: ")
+                .append(ChatColorType. HIGHLIGHT)
+                .append(formatNumber(stackSize, formatter, false))
                 .append(ChatColorType.NORMAL)
-                .append(formatNumber(splitAmount, formatter, true) + " coins each")
+                .append(" coins split between " + numPeople + " people: ")
+                .append(ChatColorType.HIGHLIGHT)
+                .append(formatNumber(splitAmount, formatter, true))
+                .append(ChatColorType.NORMAL)
+                .append(" coins each")
                 .build();
 
         chatMessageManager.queue(QueuedMessage.builder()
-                .type(ChatMessageType.GAMEMESSAGE)
+                .type(ChatMessageType.CONSOLE)  // ← Changed from GAMEMESSAGE
                 .runeLiteFormattedMessage(message)
                 .build());
 
         if (remainder > 0) {
             String remainderMsg = new ChatMessageBuilder()
-                    .append(ChatColorType.HIGHLIGHT)
-                    .append("Remainder: " + formatNumber(remainder, formatter, false) + " coins")
                     .append(ChatColorType.NORMAL)
+                    .append("Remainder: ")
+                    .append(ChatColorType.HIGHLIGHT)
+                    .append(formatNumber(remainder, formatter, false) + " coins")
                     .build();
 
             chatMessageManager.queue(QueuedMessage.builder()
-                    .type(ChatMessageType.GAMEMESSAGE)
+                    .type(ChatMessageType.CONSOLE)  // ← Changed from GAMEMESSAGE
                     .runeLiteFormattedMessage(remainderMsg)
                     .build());
         }
