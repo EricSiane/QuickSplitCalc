@@ -21,7 +21,7 @@ import com.google.inject.Provides;
 import javax.inject.Inject;
 import java.text.NumberFormat;
 import java.util.Locale;
-import java.awt.Color;
+
 
 @PluginDescriptor(
         name = "QuickSplitCalc",
