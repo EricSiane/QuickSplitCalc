@@ -1,13 +1,10 @@
 package com.QuickSplitCalc;
 
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.*;
 
 @ConfigGroup("cashsplit")
 public interface QuickSplitCalcConfig extends Config
 {
-
 	@ConfigItem(
 			keyName = "roundedSplits",
 			name = "Rounded Splits",
@@ -16,5 +13,28 @@ public interface QuickSplitCalcConfig extends Config
 	default boolean roundedSplits()
 	{
 		return false;
+	}
+
+	enum RoundingPlace
+	{
+		HUNDRED_THOUSAND("100,000"),
+		TEN_THOUSAND("10,000"),
+		ONE_THOUSAND("1,000");
+
+		private final String name;
+		RoundingPlace(String name) { this.name = name; }
+		@Override
+		public String toString() { return name; }
+	}
+
+	@ConfigItem(
+			keyName = "roundingPlace",
+			name = "Rounding Place",
+			description = "Choose the place to round split amounts to",
+			position = 1
+	)
+	default RoundingPlace roundingPlace()
+	{
+		return RoundingPlace.HUNDRED_THOUSAND;
 	}
 }
