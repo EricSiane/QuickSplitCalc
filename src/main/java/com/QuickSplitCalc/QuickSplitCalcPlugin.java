@@ -64,7 +64,7 @@ public class QuickSplitCalcPlugin extends Plugin {
     private int tradesRemaining = 0;
     private Widget splitTextWidget = null;
 
-    // Text colors (matching Flipping Copilot style)
+    // Text colors
     private static final int MOUSE_OFF_TEXT_COLOR = 0x00008B;
     private static final int MOUSE_OVER_TEXT_COLOR = 0x00FFFF;
 

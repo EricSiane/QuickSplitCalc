@@ -37,4 +37,5 @@ public interface QuickSplitCalcConfig extends Config
 	{
 		return RoundingPlace.HUNDRED_THOUSAND;
 	}
+
 }
