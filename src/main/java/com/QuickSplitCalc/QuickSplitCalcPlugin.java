@@ -143,8 +143,11 @@ public class QuickSplitCalcPlugin extends Plugin {
             }
             
             // Add Split submenu (existing functionality)
-            for (net.runelite.api.MenuEntry entry : client.getMenuEntries()) {
-                if (entry.getOption().equals("Split")) {
+            // Check if Split option already exists (get fresh menu entries in case they were modified above)
+            net.runelite.api.MenuEntry[] currentMenuEntries = client.getMenuEntries();
+            for (net.runelite.api.MenuEntry entry : currentMenuEntries) {
+                String option = entry.getOption();
+                if (option != null && option.equals("Split")) {
                     return;
                 }
             }
