@@ -81,7 +81,7 @@ public class QuickSplitCalcPlugin extends Plugin {
 
     @Subscribe
     public void onWidgetLoaded(WidgetLoaded event) {
-        // Detect when trade window opens (interface ID 335)
+        // Detect when trade window opens
         if (event.getGroupId() == InterfaceID.TRADE) {
             tradeWindowOpen = true;
             log.debug("Trade window opened");
@@ -118,7 +118,8 @@ public class QuickSplitCalcPlugin extends Plugin {
                 
                 for (int i = 0; i < menuEntries.length; i++) {
                     net.runelite.api.MenuEntry entry = menuEntries[i];
-                    if (entry.getOption().equals("Offer-X") && entry.getItemId() == ItemID.COINS_995) {
+                    String option = entry.getOption();
+                    if (option != null && option.equals("Offer-X") && entry.getItemId() == ItemID.COINS_995) {
                         offerXIndex = i;
                         break;
                     }
