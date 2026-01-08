@@ -119,7 +119,7 @@ public class QuickSplitCalcPlugin extends Plugin {
                 for (int i = 0; i < menuEntries.length; i++) {
                     net.runelite.api.MenuEntry entry = menuEntries[i];
                     String option = entry.getOption();
-                    if (option != null && option.equals("Offer-X") && entry.getItemId() == ItemID.COINS_995) {
+                    if (option != null && option.equals("Offer-X")) {
                         offerXIndex = i;
                         break;
                     }
@@ -143,9 +143,9 @@ public class QuickSplitCalcPlugin extends Plugin {
             }
             
             // Add Split submenu (existing functionality)
-            // Check if Split option already exists (get fresh menu entries in case they were modified above)
-            net.runelite.api.MenuEntry[] currentMenuEntries = client.getMenuEntries();
-            for (net.runelite.api.MenuEntry entry : currentMenuEntries) {
+            // Get fresh menu entries in case they were modified above
+            net.runelite.api.MenuEntry[] menuEntries = client.getMenuEntries();
+            for (net.runelite.api.MenuEntry entry : menuEntries) {
                 String option = entry.getOption();
                 if (option != null && option.equals("Split")) {
                     return;
