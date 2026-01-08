@@ -8,7 +8,10 @@ import net.runelite.api.VarClientInt;
 import net.runelite.api.VarClientStr;
 import net.runelite.api.events.MenuEntryAdded;
 import net.runelite.api.events.VarClientIntChanged;
+import net.runelite.api.events.WidgetLoaded;
+import net.runelite.api.events.WidgetClosed;
 import net.runelite.api.widgets.ComponentID;
+import net.runelite.api.widgets.InterfaceID;
 import net.runelite.api.widgets.JavaScriptCallback;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetPositionMode;
@@ -63,6 +66,9 @@ public class QuickSplitCalcPlugin extends Plugin {
     private int totalTrades = 0;
     private int tradesRemaining = 0;
     private Widget splitTextWidget = null;
+    
+    // Track if trade window is open
+    private boolean tradeWindowOpen = false;
 
     // Text colors (matching Flipping Copilot style)
     private static final int MOUSE_OFF_TEXT_COLOR = 0x00008B;
@@ -71,6 +77,24 @@ public class QuickSplitCalcPlugin extends Plugin {
     @Provides
     QuickSplitCalcConfig provideConfig(ConfigManager configManager) {
         return configManager.getConfig(QuickSplitCalcConfig.class);
+    }
+
+    @Subscribe
+    public void onWidgetLoaded(WidgetLoaded event) {
+        // Detect when trade window opens (interface ID 335)
+        if (event.getGroupId() == InterfaceID.TRADE) {
+            tradeWindowOpen = true;
+            log.debug("Trade window opened");
+        }
+    }
+
+    @Subscribe
+    public void onWidgetClosed(WidgetClosed event) {
+        // Detect when trade window closes
+        if (event.getGroupId() == InterfaceID.TRADE) {
+            tradeWindowOpen = false;
+            log.debug("Trade window closed");
+        }
     }
 
     @Subscribe
@@ -86,6 +110,41 @@ public class QuickSplitCalcPlugin extends Plugin {
         }
 
         if (event.getItemId() == ItemID.COINS_995) {
+            // If trade window is open and we have an active split, swap "Offer-X" to be the left-click option
+            if (tradeWindowOpen && lastSplitAmount > 0 && tradesRemaining > 0) {
+                // Find the "Offer-X" entry and swap it to be the default (highest priority)
+                net.runelite.api.MenuEntry[] menuEntries = client.getMenuEntries();
+                int offerXIndex = -1;
+                
+                for (int i = 0; i < menuEntries.length; i++) {
+                    net.runelite.api.MenuEntry entry = menuEntries[i];
+                    if (entry.getOption().equals("Offer-X") && entry.getItemId() == ItemID.COINS_995) {
+                        offerXIndex = i;
+                        break;
+                    }
+                }
+                
+                // If we found Offer-X, move it to the end of the array (which makes it the default/top option)
+                if (offerXIndex != -1 && offerXIndex != menuEntries.length - 1) {
+                    net.runelite.api.MenuEntry offerXEntry = menuEntries[offerXIndex];
+                    net.runelite.api.MenuEntry[] newEntries = new net.runelite.api.MenuEntry[menuEntries.length];
+                    
+                    // Copy all entries except Offer-X
+                    int newIndex = 0;
+                    for (int i = 0; i < menuEntries.length; i++) {
+                        if (i != offerXIndex) {
+                            newEntries[newIndex++] = menuEntries[i];
+                        }
+                    }
+                    // Add Offer-X at the end (highest priority)
+                    newEntries[newEntries.length - 1] = offerXEntry;
+                    
+                    client.setMenuEntries(newEntries);
+                    log.debug("Swapped Coins menu entry to make Offer-X the default option");
+                }
+            }
+            
+            // Add Split submenu (existing functionality)
             for (net.runelite.api.MenuEntry entry : client.getMenuEntries()) {
                 if (entry.getOption().equals("Split")) {
                     return;
