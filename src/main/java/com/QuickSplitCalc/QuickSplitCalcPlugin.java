@@ -124,18 +124,15 @@ public class QuickSplitCalcPlugin extends Plugin {
                     }
                 }
                 
-                // If we found Offer-X, move it to the end of the array (which makes it the default/top option)
+                // If we found Offer-X and it's not already at the end, move it to the end of the array (which makes it the default/top option)
                 if (offerXIndex != -1 && offerXIndex != menuEntries.length - 1) {
                     net.runelite.api.MenuEntry offerXEntry = menuEntries[offerXIndex];
                     net.runelite.api.MenuEntry[] newEntries = new net.runelite.api.MenuEntry[menuEntries.length];
                     
-                    // Copy all entries except Offer-X
-                    int newIndex = 0;
-                    for (int i = 0; i < menuEntries.length; i++) {
-                        if (i != offerXIndex) {
-                            newEntries[newIndex++] = menuEntries[i];
-                        }
-                    }
+                    // Copy entries before Offer-X
+                    System.arraycopy(menuEntries, 0, newEntries, 0, offerXIndex);
+                    // Copy entries after Offer-X, shifted one position left
+                    System.arraycopy(menuEntries, offerXIndex + 1, newEntries, offerXIndex, menuEntries.length - offerXIndex - 1);
                     // Add Offer-X at the end (highest priority)
                     newEntries[newEntries.length - 1] = offerXEntry;
                     
