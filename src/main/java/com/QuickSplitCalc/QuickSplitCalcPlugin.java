@@ -114,7 +114,8 @@ public class QuickSplitCalcPlugin extends Plugin {
                     .onClick(menuEntry -> handleCustomSplit(menuEntry, event.getActionParam0()));
 
             // Add "Clear Split" option if there's an active split
-            if (lastSplitAmount > 0 && tradesRemaining > 0) {
+// Add "Clear Split" option if there's an active split and helper is enabled
+            if (config.enableSplitHelper() && lastSplitAmount > 0 && tradesRemaining > 0) {
                 subMenu.createMenuEntry(0)
                         .setOption("<col=ff0000>Clear Split</col>")
                         .setTarget("")
@@ -255,30 +256,32 @@ public class QuickSplitCalcPlugin extends Plugin {
                     .build());
         }
 
-        // Store the split amount and calculate trades remaining
-        lastSplitAmount = splitAmount;
-        numberOfPeople = numPeople;
-        totalTrades = numPeople - 1; // If 3 people, you need 2 trades total
-        tradesRemaining = totalTrades;
+        // Only activate Split Helper if enabled in config
+        if (config.enableSplitHelper()) {
+            lastSplitAmount = splitAmount;
+            numberOfPeople = numPeople;
+            totalTrades = numPeople - 1;
+            tradesRemaining = totalTrades;
 
-        log.info("Split calculated - Amount: {}, People: {}, Total trades: {}, Trades remaining: {}",
-                lastSplitAmount, numberOfPeople, totalTrades, tradesRemaining);
+            log.info("Split calculated - Amount: {}, People: {}, Total trades: {}, Trades remaining: {}",
+                    lastSplitAmount, numberOfPeople, totalTrades, tradesRemaining);
 
-        // Show helper message
-        String helperMessage = new ChatMessageBuilder()
-                .append(ChatColorType.NORMAL)
-                .append("Split helper active for the next ")
-                .append(ChatColorType.HIGHLIGHT)
-                .append(String.valueOf(totalTrades))
-                .append(ChatColorType.NORMAL)
-                .append(totalTrades == 1 ? " trade" : " trades")
-                .build();
+            String helperMessage = new ChatMessageBuilder()
+                    .append(ChatColorType.NORMAL)
+                    .append("Split helper active for the next ")
+                    .append(ChatColorType.HIGHLIGHT)
+                    .append(String.valueOf(totalTrades))
+                    .append(ChatColorType.NORMAL)
+                    .append(totalTrades == 1 ? " trade" : " trades")
+                    .build();
 
-        chatMessageManager.queue(QueuedMessage.builder()
-                .type(ChatMessageType.CONSOLE)
-                .runeLiteFormattedMessage(helperMessage)
-                .build());
+            chatMessageManager.queue(QueuedMessage.builder()
+                    .type(ChatMessageType.CONSOLE)
+                    .runeLiteFormattedMessage(helperMessage)
+                    .build());
+        }
     }
+
 
     private void handleCustomSplit(net.runelite.api.MenuEntry menuEntry, int inventorySlot) {
         int stackSize = client.getItemContainer(InventoryID.INVENTORY).getItem(inventorySlot).getQuantity();
