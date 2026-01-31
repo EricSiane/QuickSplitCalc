@@ -355,6 +355,13 @@ public class QuickSplitCalcPlugin extends Plugin {
     }
 
     private void createSplitTextWidget() {
+        // Only show the split helper if the trade window is open (widget 335)
+        Widget tradeWindow = client.getWidget(335, 0);
+        if (tradeWindow == null || tradeWindow.isHidden()) {
+            log.info("Trade window not open, not creating split widget");
+            return;
+        }
+
         Widget chatboxContainer = client.getWidget(ComponentID.CHATBOX_CONTAINER);
         if (chatboxContainer == null) {
             log.warn("Chatbox container is null, cannot create widget");
