@@ -131,10 +131,10 @@ public class QuickSplitCalcPlugin extends Plugin {
             if (lastSplitAmount > 0 && tradesRemaining > 0) {
                 tradesRemaining--;
                 int currentTrade = totalTrades - tradesRemaining;
-                log.info("Trade accepted - Trades remaining: {} (Trade {}/{})", tradesRemaining, currentTrade, totalTrades);
+                log.debug("Trade accepted - Trades remaining: {} (Trade {}/{})", tradesRemaining, currentTrade, totalTrades);
 
                 if (tradesRemaining <= 0) {
-                    log.info("All trades complete - clearing split data");
+                    log.debug("All trades complete - clearing split data");
                     lastSplitAmount = 0;
                     numberOfPeople = 0;
                     totalTrades = 0;
@@ -165,7 +165,7 @@ public class QuickSplitCalcPlugin extends Plugin {
                             log.debug("Conditions met - attempting to create widget");
                             if (titleText != null && titleText.equals("Enter amount:")) {
                                 int currentTrade = totalTrades - tradesRemaining + 1;
-                                log.info("Creating split text widget for trade {}/{}", currentTrade, totalTrades);
+                                log.debug("Creating split text widget for trade {}/{}", currentTrade, totalTrades);
                                 createSplitTextWidget();
                             }
                         } else {
@@ -278,7 +278,7 @@ public class QuickSplitCalcPlugin extends Plugin {
             totalTrades = numPeople - 1;
             tradesRemaining = totalTrades;
 
-            log.info("Split calculated - Amount: {}, People: {}, Total trades: {}, Trades remaining: {}",
+            log.debug("Split calculated - Amount: {}, People: {}, Total trades: {}, Trades remaining: {}",
                     lastSplitAmount, numberOfPeople, totalTrades, tradesRemaining);
 
             String helperMessage = new ChatMessageBuilder()
@@ -323,7 +323,7 @@ public class QuickSplitCalcPlugin extends Plugin {
     }
 
     private void clearSplit() {
-        log.info("Clearing split data - was at trade {}/{}", (totalTrades - tradesRemaining + 1), totalTrades);
+        log.debug("Clearing split data - was at trade {}/{}", (totalTrades - tradesRemaining + 1), totalTrades);
 
         int tradesLeft = tradesRemaining;
         int amount = lastSplitAmount;
@@ -358,7 +358,7 @@ public class QuickSplitCalcPlugin extends Plugin {
         // Only show the split helper if the trade window is open (widget 335)
         Widget tradeWindow = client.getWidget(335, 0);
         if (tradeWindow == null || tradeWindow.isHidden()) {
-            log.info("Trade window not open, not creating split widget");
+            log.debug("Trade window not open, not creating split widget");
             return;
         }
 
@@ -380,7 +380,7 @@ public class QuickSplitCalcPlugin extends Plugin {
 
         splitTextWidget.setText("Set to Split Amount: " + formattedAmount + " gp (" + tradeCounter + ")");
 
-        log.info("Created split widget with text: {} (tradesRemaining: {})", splitTextWidget.getText(), tradesRemaining);
+        log.debug("Created split widget with text: {} (tradesRemaining: {})", splitTextWidget.getText(), tradesRemaining);
 
         splitTextWidget.setTextColor(MOUSE_OFF_TEXT_COLOR);
         splitTextWidget.setFontId(495);
@@ -395,7 +395,7 @@ public class QuickSplitCalcPlugin extends Plugin {
         splitTextWidget.setAction(0, "Fill amount");
         splitTextWidget.setHasListener(true);
         splitTextWidget.setOnOpListener((JavaScriptCallback) ev -> {
-            log.info("Split widget clicked - filling trade amount: {}", lastSplitAmount);
+            log.debug("Split widget clicked - filling trade amount: {}", lastSplitAmount);
             fillTradeAmount(lastSplitAmount);
         });
 
@@ -447,7 +447,7 @@ public class QuickSplitCalcPlugin extends Plugin {
         if (chatboxInputWidget != null) {
             chatboxInputWidget.setText(String.valueOf(amount) + "*");
             client.setVarcStrValue(VarClientStr.INPUT_TEXT, String.valueOf(amount));
-            log.info("Filled trade amount: {}", amount);
+            log.debug("Filled trade amount: {}", amount);
         } else {
             log.warn("Could not fill trade amount - chatbox input widget is null");
         }
