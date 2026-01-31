@@ -23,3 +23,7 @@ A simple little plugin that adds a Split Option to your stack of coins and will 
 ## v1.1.0 - Update - Stuff that Should have been in 1.0
 - Updated Rounding Mode feature to round split amounts to the 100, 10, or 1 thousands place in Config Menu
 - Added Split Helper and its Option to disable in the config menu
+
+## v1.1.1 - Bug Fixes
+- Fixed a bug where Split Helper would show in menus outside of trade windows
+- Changed behavior of Split Helper to only update trade counter on successful trades
